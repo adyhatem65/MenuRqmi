@@ -296,7 +296,7 @@ function OrderDetails({ navigation, route }) {
           {showActions()}
 
           {/* info */}
-          <InfoBox title={Language.order}>
+          <InfoBox title={Language.orderDetails}>
             <Text size={14} style={styles.cardTitle}>{Language.orderNumber + ": #"}{JSON.stringify(order?.id)}</Text>
             <Text size={14} style={styles.cardTitle}>{Language.created + ": "}{moment(order?.created_at).format(config.dateTimeFormat)}</Text>
             <Text bold size={14} style={styles.cardTitle}>{Language.status + ": "}{order?.last_status.length > 0 ? order?.last_status[0].name : ""}</Text>

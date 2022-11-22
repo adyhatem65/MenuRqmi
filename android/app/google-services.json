@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "766267571556",
+    "project_id": "menu-rqmi",
+    "storage_bucket": "menu-rqmi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766267571556:android:9751604e3dafab767f0e71",
+        "android_client_info": {
+          "package_name": "com.menurqmi.menurqmivendor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766267571556-j20pplk3sfa8msokla5kop2je292kigt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2aDKd4LF6j7mtL3_JPNv2xbbQCkCx1o0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766267571556-j20pplk3sfa8msokla5kop2je292kigt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

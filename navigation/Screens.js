@@ -80,6 +80,7 @@ export default function App({ navigation }) {
           console.log(JSON.stringify(responseJson));
           if (responseJson.status) {
             //User ok
+            console.log('login : ', responseJson)
             User.setLoggedInUser(responseJson, () => {
               data.toastok.current.show(Language.userIsNowLoggedIn, 2000, () => {
                 dispatch({ type: 'SIGN_IN', token: responseJson.token });
@@ -93,8 +94,9 @@ export default function App({ navigation }) {
         });
       },
       signOut: async data => {
-        User.logout(() => {
+        User.logout(async () => {
           dispatch({ type: 'SIGN_OUT' })
+          await AsyncStorage.setItem('res_data', '')
         })
       },
       signUp: async (data,callback) => {

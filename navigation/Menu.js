@@ -1,75 +1,122 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSafeArea } from "react-native-safe-area-context";
-import {
-  ScrollView,
-  StyleSheet,
-  Image
-} from "react-native";
+import { ScrollView, StyleSheet, Image, Dimensions } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 
-import appConfig from './../app.json'
-import config from '../config';
+import appConfig from "./../app.json";
+import config from "../config";
 
 import Images from "../constants/Images";
-import { DrawerItem as DrawerCustomItem } from '../components';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { DrawerItem as DrawerCustomItem } from "../components";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function CustomDrawerContent({ drawerPosition, navigation, profile, focused, screens, state, ...rest }) {
+const {width, height} = Dimensions.get('window')
+
+function CustomDrawerContent({
+  drawerPosition,
+  navigation,
+  profile,
+  focused,
+  screens,
+  state,
+  ...rest
+}) {
   const insets = useSafeArea();
-  
+  const [resData, setResData] = useState({});
+  const [validImage, setValidImage] = useState(true);
+
+  useEffect(() => {
+    getRestaurantData();
+  }, []);
+
+  const getRestaurantData = async () => {
+    let restaurantData = (await AsyncStorage.getItem("res_data")) ?? "{}";
+
+    restaurantData = JSON.parse(restaurantData);
+
+    setResData(restaurantData);
+  };
+
   return (
     <Block
       style={styles.container}
-      forceInset={{ top: 'always', horizontal: 'never' }}
+      forceInset={{ top: "always", horizontal: "never" }}
     >
-      <Block flex={0.06} style={styles.header}>
-      <Image source={{ uri:Images.RemoteLogo }} style={{width: (195),height: (config.LOGOHeight*(195/config.LOGOWidth))}}/>
+      <Block flex={0.07} style={styles.header}>
+        <Image
+          source={{
+            uri:
+              resData?.restorant_logo && validImage
+                ? resData?.restorant_logo
+                : Images.RemoteLogo,
+          }}
+          style={{
+            width: '100%',
+            height: height * 0.3,
+            resizeMode: 'contain'
+          }}
+          onError={() => setValidImage(false)}
+        />
       </Block>
-      <Block flex style={{ paddingLeft: 8, paddingRight: 14 }}>
-        
-        <DrawerContentScrollView  {...rest} style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-              {screens.map((item, index) => {
-                    return (
-                      <DrawerCustomItem 
-                              key={index}
-                              title={item.title}
-                              screen={item.link}
-                              focused={false}
-                              onPress={() => {navigation.navigate(item.link)}}
-                          />
-                    )
-              }
-              )}
-            
+      <Block flex style={{ paddingLeft: 8, paddingRight: 14, }}>
+        <DrawerContentScrollView
+          {...rest}
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {screens.map((item, index) => {
+            return (
+              <DrawerCustomItem
+                key={index}
+                title={item.title}
+                screen={item.link}
+                focused={false}
+                onPress={() => {
+                  navigation.navigate(item.link);
+                }}
+              />
+            );
+          })}
 
-            <Block flex style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}>
-              <Block style={{ borderColor: "rgba(0,0,0,0.2)", width: '100%', borderWidth: StyleSheet.hairlineWidth }}/>
-              <Text muted color="#8898AA" style={{ marginTop: 16, marginLeft: 8 }}>v{appConfig.expo.version}</Text>
-            
-            </Block>
-            
+          <Block
+            flex
+            style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}
+          >
+            <Block
+              style={{
+                borderColor: "rgba(0,0,0,0.2)",
+                width: "100%",
+                borderWidth: StyleSheet.hairlineWidth,
+              }}
+            />
+            <Text
+              muted
+              color="#8898AA"
+              style={{ marginTop: 16, marginLeft: 8 }}
+            >
+              v{appConfig.expo.version}
+            </Text>
+          </Block>
         </DrawerContentScrollView>
       </Block>
     </Block>
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   header: {
-    paddingHorizontal: 28,
-    paddingBottom: theme.SIZES.BASE,
-    paddingTop: theme.SIZES.BASE * 3,
-    justifyContent: 'center',
-    marginTop:50,
+    paddingHorizontal: width * 0.1,
+    paddingVertical: theme.SIZES.BASE * 5,
+    justifyContent: "center",
   },
-  logo:{
-    width:487/2.5,
-    height:144/2.5
-  }
+  logo: {
+    width: 487 / 2.5,
+    height: 144 / 2.5,
+  },
 });
 
 export default CustomDrawerContent;

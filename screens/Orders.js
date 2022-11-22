@@ -16,7 +16,7 @@ import { Checkbox } from 'galio-framework';
 import moment from "moment";
 import * as Location from 'expo-location';
 import Toast from 'react-native-easy-toast';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function Orders({ navigation }) {
@@ -97,6 +97,16 @@ function Orders({ navigation }) {
         setOrdersLoaded(true);
         alert(error)
       })
+
+      API.getRestaurantData(
+        async (res) => {
+          // console.log('res : ', res)
+          await AsyncStorage.setItem('res_data', JSON.stringify(res))
+        },
+        (err) => {
+          console.log('err : ', err)
+        }
+      );
     } else {
       //Client get orders
       API.getClientOrders((ordersResponse) => {
@@ -112,12 +122,12 @@ function Orders({ navigation }) {
   }, []);
 
   //Timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRefreshing(true);
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setRefreshing(true);
+  //   }, 30000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
 
   function setActiveStatus(status) {

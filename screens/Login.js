@@ -86,6 +86,7 @@ const Login = ({navigation}) => {
                       <Input
                        value ={email}
                         borderless
+                        color={'#aaa'}
                         onChangeText={text => setEmail(text)}
                         placeholder={"Email"}
                         iconContent={
@@ -107,6 +108,7 @@ const Login = ({navigation}) => {
                         password
                         borderles
                         placeholder={"Password"}
+                        color={'#aaa'}
                         onChangeText={text => setPassword(text)}
                         iconContent={
                           <Icon

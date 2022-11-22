@@ -236,7 +236,7 @@ class Register extends React.Component {
                           onChangeText={text => this.setState({
                             vendor_name: text
                           })}
-                          placeholder={"Vendor Name"}
+                          placeholder={"Store Name"}
                           iconContent={
                             <Entypo name="shop" size={16} color={argonTheme.COLORS.BLACK} style={styles.inputIcons} />
                           }
@@ -260,7 +260,7 @@ class Register extends React.Component {
                           onChangeText={text => this.setState({
                             name: text
                           })}
-                          placeholder={"Name"}
+                          placeholder={"Owner Name"}
                           iconContent={
                             <FontAwesome5 name="user-alt" size={16} color={argonTheme.COLORS.BLACK} style={styles.inputIcons} />
 
