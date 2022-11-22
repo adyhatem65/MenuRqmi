@@ -11,6 +11,8 @@ import { DrawerItem as DrawerCustomItem } from "../components";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import API from '../services/api'
+
 const {width, height} = Dimensions.get('window')
 
 function CustomDrawerContent({
@@ -27,7 +29,23 @@ function CustomDrawerContent({
   const [validImage, setValidImage] = useState(true);
 
   useEffect(() => {
-    getRestaurantData();
+    getRestaurantData().then(data => {
+      console.log('data == ', data)
+      if (data?.restorant_logo) {
+        setResData(data)
+      } else {
+        API.getRestaurantData(
+          async (res) => {
+            // console.log('res : ', res)
+            setResData(res);
+            await AsyncStorage.setItem('res_data', JSON.stringify(res))
+          },
+          (err) => {
+            console.log('err : ', err)
+          }
+        );
+      }
+    })
   }, []);
 
   const getRestaurantData = async () => {
@@ -35,7 +53,7 @@ function CustomDrawerContent({
 
     restaurantData = JSON.parse(restaurantData);
 
-    setResData(restaurantData);
+    return restaurantData
   };
 
   return (

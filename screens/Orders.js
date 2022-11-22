@@ -97,16 +97,6 @@ function Orders({ navigation }) {
         setOrdersLoaded(true);
         alert(error)
       })
-
-      API.getRestaurantData(
-        async (res) => {
-          // console.log('res : ', res)
-          await AsyncStorage.setItem('res_data', JSON.stringify(res))
-        },
-        (err) => {
-          console.log('err : ', err)
-        }
-      );
     } else {
       //Client get orders
       API.getClientOrders((ordersResponse) => {
