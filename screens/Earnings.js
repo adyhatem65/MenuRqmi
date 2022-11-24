@@ -14,12 +14,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import config from './../config'
 import {  LoadingIndicator } from 'react-native-expo-fancy-alerts'
 import argonTheme from "../constants/Theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Earnings({navigation}){
     
     const [earnings, setEarnings]=useState(null);
     const [refreshing, setRefreshing] = React.useState(false);
     const [earningsLoaded,setEarningsLoaded]=useState(false);
+    const [resData, setResData] = useState({})
 
     useEffect(()=>{
       if(config.DRIVER_APP){
@@ -46,9 +48,19 @@ function Earnings({navigation}){
           alert(error);
           setEarningsLoaded(true);
         })
+
+        getRestaurantData()
       }else{
       }
     },[refreshing])
+
+    const getRestaurantData = async () => {
+      let restaurantData = (await AsyncStorage.getItem("res_data")) ?? "{}";
+  
+      restaurantData = JSON.parse(restaurantData);
+  
+      setResData(restaurantData)
+    }
 
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);      
@@ -70,12 +82,12 @@ function Earnings({navigation}){
             return(
                 <Block >
                     <Text style={{paddingTop:30}} h2>{Language.hi} {earnings.user}!</Text>
-                    <Text muted style={{marginBottom:20}}>{Language.today_you_have_made} {earnings.today.earning.toFixed(2)}{config.currencySign} {Language.by_doing} {earnings.today.orders} {Language.orders}</Text>
+                    <Text muted style={{marginBottom:20}}>{Language.today_you_have_made} {earnings.today.earning.toFixed(2)} {resData?.restorant?.currency} {Language.by_doing} {earnings.today.orders} {Language.orders}</Text>
                      
-                     <EarningBox earnings={earnings.today} title={Language.today} color={argonTheme.COLORS.PRIMARY} />
-                     <EarningBox earnings={earnings.week} title={Language.this_week} color={argonTheme.COLORS.SUCCESS} />
-                     <EarningBox earnings={earnings.month} title={Language.this_month} color={argonTheme.COLORS.WARNING} />
-                     <EarningBox earnings={earnings.previous} title={Language.previous_month} color={argonTheme.COLORS.LABEL} />
+                     <EarningBox earnings={earnings.today} title={Language.today} color={argonTheme.COLORS.PRIMARY} currency={resData?.restorant?.currency} />
+                     <EarningBox earnings={earnings.week} title={Language.this_week} color={argonTheme.COLORS.SUCCESS} currency={resData?.restorant?.currency} />
+                     <EarningBox earnings={earnings.month} title={Language.this_month} color={argonTheme.COLORS.WARNING} currency={resData?.restorant?.currency} />
+                     <EarningBox earnings={earnings.previous} title={Language.previous_month} color={argonTheme.COLORS.LABEL} currency={resData?.restorant?.currency} />
                 </Block>
            )
         }

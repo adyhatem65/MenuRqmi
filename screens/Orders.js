@@ -21,8 +21,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Orders({ navigation }) {
 
-
-
   //Location
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -31,6 +29,7 @@ function Orders({ navigation }) {
   const [available, setAvailable] = useState(false);
   const [ordersLoaded, setOrdersLoaded] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [resData, setResData] = useState({})
 
   const cardContainer = [styles.card, styles.shadow];
 
@@ -97,6 +96,8 @@ function Orders({ navigation }) {
         setOrdersLoaded(true);
         alert(error)
       })
+
+      getRestaurantData()
     } else {
       //Client get orders
       API.getClientOrders((ordersResponse) => {
@@ -106,6 +107,14 @@ function Orders({ navigation }) {
       })
     }
   }, [refreshing])
+
+  const getRestaurantData = async () => {
+    let restaurantData = (await AsyncStorage.getItem("res_data")) ?? "{}";
+
+    restaurantData = JSON.parse(restaurantData);
+
+    setResData(restaurantData)
+  }
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -165,7 +174,7 @@ function Orders({ navigation }) {
             <Text bold style={styles.cardTitle}>#{item.id} {item.restorant.name}</Text>
             <Text muted style={styles.cardTitle}>{Language.created + ": "}{moment(item.created_at).format(config.dateTimeFormat)}</Text>
             <Text muted bold style={styles.cardTitle}>{Language.status + ": "}{item.status.length - 1 > -1 ? item.status[item.status.length - 1].name : ""}</Text>
-            <Text bold style={styles.cardTitle}>{parseFloat(item.order_price) + parseFloat(item.delivery_price)}{config.currencySign}</Text>
+            <Text bold style={styles.cardTitle}>{parseFloat(item.order_price) + parseFloat(item.delivery_price)} {resData?.restorant?.currency}</Text>
           </Block>
         </TouchableOpacity>
 

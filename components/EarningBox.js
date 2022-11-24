@@ -16,7 +16,7 @@ export default function EarningBox(props) {
                     <Text bold>{props.earnings.orders} {Language.orders}</Text>
                 </Block>
                 <Block>
-                    <Text bold>{props.earnings.earning.toFixed(2)} {config.currencySign}</Text>
+                    <Text bold>{props.earnings.earning.toFixed(2)} {props?.currency}</Text>
                 </Block>
              </Block>
             </Block>

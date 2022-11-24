@@ -11,6 +11,7 @@ import Fancy from "./../components/Fancy"
 import InfoBox from "../components/InfoBox"
 import API from './../services/api'
 import Button from "../components//Button";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 /**
@@ -54,6 +55,7 @@ function OrderDetails({ navigation, route }) {
   const [driver_percent_from_deliver, setDriverPercentFromDeliver] = useState(100);
   const [action, setAction] = useState("");
   const [refreshing, setRefreshing] = React.useState(false);
+  const [resData, setResData] = useState({})
 
   useEffect(() => {
     if (config.DRIVER_APP) {
@@ -69,10 +71,18 @@ function OrderDetails({ navigation, route }) {
         setOrder(ordersResponse);
         setRefreshing(false);
       }, (error) => { alert(error) })
-    } else {
-      // console.log(order)
+    } else if (config.VENDOR_APP) {
+      getRestaurantData()
     }
   }, [refreshing])
+
+  const getRestaurantData = async () => {
+    let restaurantData = (await AsyncStorage.getItem("res_data")) ?? "{}";
+
+    restaurantData = JSON.parse(restaurantData);
+
+    setResData(restaurantData)
+  }
 
   const getOrderDetails = () => {
     if (config.VENDOR_APP) {
@@ -328,7 +338,7 @@ function OrderDetails({ navigation, route }) {
               order?.items?.map((item, index) => {
                 return (
                   <Block style={{ marginTop: 10 }}>
-                    <Text size={14} style={styles.cardTitle}>{item.pivot.qty + " x " + item.name + "  " + item.pivot.variant_name + " " + item.pivot.variant_price}{config.currencySign}</Text>
+                    <Text size={14} style={styles.cardTitle}>{item.pivot.qty + " x " + item.name + "  " + item.pivot.variant_name + " " + item.pivot.variant_price} {resData?.restorant?.currency}</Text>
                     <Text muted style={styles.cardTitle}>{JSON.parse(item.pivot.extras).join(', ')}</Text>
                   </Block>
                 )
@@ -355,16 +365,16 @@ function OrderDetails({ navigation, route }) {
           <InfoBox title={Language.summary}>
             <Block row space={"between"} style={{ marginTop: 16 }}>
               <Block><Text bold style={[styles.cardTitle]}>{Language.subtotal}</Text></Block>
-              <Block><Text  >{order?.order_price}{config.currencySign}</Text></Block>
+              <Block><Text  >{order?.order_price} {resData?.restorant?.currency}</Text></Block>
             </Block>
             <Block row space={"between"} style={{ marginTop: 0 }}>
               <Block><Text bold style={[styles.cardTitle]}>{Language.delivery}</Text></Block>
-              <Block><Text>{order?.delivery_price}{config.currencySign}</Text></Block>
+              <Block><Text>{order?.delivery_price} {resData?.restorant?.currency}</Text></Block>
             </Block>
 
             <Block row space={"between"} style={{ marginTop: 16 }}>
               <Block><Text bold style={[styles.cardTitle]}>{Language.total}</Text></Block>
-              <Block><Text bold >{parseFloat(order?.order_price) + parseFloat(order?.delivery_price)}{config.currencySign}</Text></Block>
+              <Block><Text bold >{parseFloat(order?.order_price) + parseFloat(order?.delivery_price)} {resData?.restorant?.currency}</Text></Block>
             </Block>
           </InfoBox>
 
