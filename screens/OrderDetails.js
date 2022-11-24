@@ -49,7 +49,7 @@ function openPhoneApp(phoneNumber, client) {
 }
 
 
-
+// orderDetails
 function OrderDetails({ navigation, route }) {
   const [order, setOrder] = useState(route.params.order);
   const [driver_percent_from_deliver, setDriverPercentFromDeliver] = useState(100);
